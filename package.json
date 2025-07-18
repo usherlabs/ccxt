@@ -1,5 +1,5 @@
 {
-  "name": "@usherlabs/verity-client",
+  "name": "@usherlabs/ccxt",
   "version": "0.0.1",
   "description": "A JavaScript cryptocurrency trading library with support for 100+ exchanges powered by verity",
   "unpkg": "dist/ccxt.browser.min.js",
@@ -26,6 +26,7 @@
   "scripts": {
     "build": "tsc && npm run addJsHeaders || echo \"\"",
     "tsBuildExamples": "tsc -p ./examples/tsconfig.json",
+    "addJsHeaders": "tsx build/transpile.ts --js-headers",
     "emitAPI": "tsx build/generateImplicitAPI.ts",
     "emitAPITs": "tsx build/generateImplicitAPI.ts -- --ts",
     "emitAPIPy": "tsx build/generateImplicitAPI.ts -- --python",
