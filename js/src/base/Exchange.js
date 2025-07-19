@@ -1562,6 +1562,8 @@ const urlToMethodMap = {
         "https://api-testnet.bybit.com/v5/asset/transfer/inter-transfer": "transfer",
         "https://api-testnet.bybit.com/v5/position/switch-mode": "setPositionMode",
         "https://api-testnet.bybit.com/v5/account/set-margin-mode": "setMarginMode",
+        "https://api.bybit.com/v5/account/withdrawal": "withdraw",
+        "https://api-testnet.bybit.com/v5/account/withdrawal": "withdraw",
         "https://api.bybit.com/v5/market/tickers": "fetchTickers",
         "https://api-testnet.bybit.com/v5/market/tickers": "fetchAllGreeks",
         "https://api.bybit.com/v5/market/kline": "fetchOHLCV",
@@ -2837,7 +2839,7 @@ export default class Exchange {
         try {
             this.last_proof = undefined;
             const methodCalled = urlToMethodMap[this.id][url.split("?")[0]];
-            if (this.useVerity && ["fetchBalance", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits"].includes(methodCalled)) {
+            if (this.useVerity && ["fetchBalance", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw"].includes(methodCalled)) {
                 const client = new verity.VerityClient({ prover_url: this.verityProverUrl });
                 const lowercase = Object.keys(axiosConfig.headers).map(h => `req:header:${h.toLowerCase()}`).join(",");
                 const response = await client

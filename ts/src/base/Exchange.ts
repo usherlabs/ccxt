@@ -460,7 +460,7 @@ const urlToMethodMap={
         "https://api-futures.kucoin.com/api/v1/trade/history": "fetchTrades",
         "https://api-futures.kucoin.com/api/v1/level2/depth20": "fetchOrderBook",
         "https://api-futures.kucoin.com/api/v1/ticker": "fetchTicker",
-        "https://api-futures.kucoin.com/api/v1/contracts/active": "fetchTickers"
+        "https://api-futures.kucoin.com/api/v1/contracts/active": "fetchTickers",
         "https://api-futures.kucoin.com/api/v1/kline/query": "fetchOHLCV",
         "https://openapi-v2.kucoin.com/api/v1/trade-fees": "fetchTradingFee",
         "https://api-futures.kucoin.com/api/v1/history-positions": "fetchPositionsHistory",
