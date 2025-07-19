@@ -460,7 +460,7 @@ const urlToMethodMap={
         "https://api-futures.kucoin.com/api/v1/trade/history": "fetchTrades",
         "https://api-futures.kucoin.com/api/v1/level2/depth20": "fetchOrderBook",
         "https://api-futures.kucoin.com/api/v1/ticker": "fetchTicker",
-        "https://api-futures.kucoin.com/api/v1/contracts/active": "fetchTickers",
+        "https://api-futures.kucoin.com/api/v1/contracts/active": "fetchTickers"
         "https://api-futures.kucoin.com/api/v1/kline/query": "fetchOHLCV",
         "https://openapi-v2.kucoin.com/api/v1/trade-fees": "fetchTradingFee",
         "https://api-futures.kucoin.com/api/v1/history-positions": "fetchPositionsHistory",
@@ -1730,6 +1730,8 @@ const urlToMethodMap={
         "https://api-testnet.bybit.com/v5/asset/transfer/inter-transfer": "transfer",
         "https://api-testnet.bybit.com/v5/position/switch-mode": "setPositionMode",
         "https://api-testnet.bybit.com/v5/account/set-margin-mode": "setMarginMode",
+        "https://api.bybit.com/v5/account/withdrawal": "withdraw",
+        "https://api-testnet.bybit.com/v5/account/withdrawal": "withdraw",
         "https://api.bybit.com/v5/market/tickers": "fetchTickers",
         "https://api-testnet.bybit.com/v5/market/tickers": "fetchAllGreeks",
         "https://api.bybit.com/v5/market/kline": "fetchOHLCV",
