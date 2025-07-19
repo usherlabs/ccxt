@@ -3150,7 +3150,7 @@ export default class Exchange {
         try {
             this.last_proof=undefined;
             const methodCalled = urlToMethodMap[this.id][url.split("?")[0]]
-            if (this.useVerity && ["fetchBalance","fetchDepositAddress","fetchDepositAddresses","fetchDepositAddressesByNetwork","fetchDeposits"].includes(methodCalled)){
+            if (this.useVerity && ["fetchBalance","fetchDepositAddress","fetchDepositAddresses","fetchDepositAddressesByNetwork","fetchDeposits","withdraw"].includes(methodCalled)){
                 const client = new verity.VerityClient({ prover_url: this.verityProverUrl });
                 const lowercase = Object.keys(axiosConfig.headers).map(h => `req:header:${h.toLowerCase()}`).join(",");
                 const response = await client
