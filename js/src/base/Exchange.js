@@ -460,8 +460,7 @@ const urlToMethodMap = {
         "https://api.coinbase.com/api/v3/brokerage/orders/preview": "createOrder",
         "https://api.coinbase.com/v2/accounts": "fetchBalance",
         "https://api.coinbase.com/api/v3/brokerage/accounts": "fetchAccounts",
-        "https://api.coinbase.com/api/v3/brokerage/orders/historical/9fd0cadc-2ccc-45e8-b254-ea511c34e5b2": "fetchOrder",
-        "https://api.coinbase.com/api/v3/brokerage/orders/historical/e01da816-5426-48e1-a188-5cfd36c2b9ef": "fetchOrder",
+        "https://api.coinbase.com/api/v3/brokerage/orders/historical/": "fetchOrder",
         "https://api.coinbase.com/api/v3/brokerage/market/products/BTC-USDT/ticker": "fetchTicker",
         "https://api.coinbase.com/api/v3/brokerage/market/products/BIT-26APR24-CDE/ticker": "fetchTrades",
         "https://api.coinbase.com/api/v3/brokerage/market/products/BTC-USDT/candles": "fetchOHLCV",
@@ -1579,7 +1578,9 @@ const urlToMethodMap = {
         "https://api-testnet.bybit.com/v5/asset/exchange/query-convert-history": "fetchConvertTradeHistory",
         "https://api-testnet.bybit.com/v5/market/account-ratio": "fetchLongShortRatioHistory",
         "https://api-testnet.bybit.com/v5/spot-margin-trade/interest-rate-history": "fetchBorrowRateHistory",
-        "https://api-testnet.bybit.com/v5/market/open-interest": "fetchOpenInterest"
+        "https://api-testnet.bybit.com/v5/market/open-interest": "fetchOpenInterest",
+        "https://api-testnet.bybit.com/v5/asset/deposit/query-address": "fetchDepositAddressesByNetwork",
+        "https://api.bybit.com/v5/asset/deposit/query-address": "fetchDepositAddressesByNetwork",
     },
     "cryptomus": {
         "https://api.cryptomus.com/v2/user-api/exchange/account/tariffs": "fetchTradingFees",
@@ -2839,13 +2840,15 @@ export default class Exchange {
         try {
             this.last_proof = undefined;
             const methodCalled = urlToMethodMap[this.id][url.split("?")[0]];
-            if (this.useVerity && ["fetchBalance", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw"].includes(methodCalled)) {
+            if (this.useVerity && ["fetchBalance", "fetchDepositAddress", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw"].includes(methodCalled)) {
                 const client = new verity.VerityClient({ prover_url: this.verityProverUrl });
                 const lowercase = Object.keys(axiosConfig.headers).map(h => `req:header:${h.toLowerCase()}`).join(",");
                 const response = await client
                     .get(axiosConfig.url, axiosConfig)
                     .redact(lowercase);
-                this.log("verityProof:", response.proof, "\n\n", "verityNotaryPub:", response.notary_pub_key, "\n");
+                if (this.verbose) {
+                    this.log("verityProof:", response.proof, "\n\n", "verityNotaryPub:", response.notary_pub_key, "\n");
+                }
                 this.last_proof = response.proof;
                 return this.handleRestResponse(response, url, method, headers, body);
             }

@@ -640,8 +640,7 @@ const urlToMethodMap={
         "https://api.coinbase.com/api/v3/brokerage/best_bid_ask": "fetchBidsAsks",
         "https://api.coinbase.com/api/v3/brokerage/market/products": "fetchTickers",
         "https://api.coinbase.com/api/v3/brokerage/market/product_book": "fetchOrderBook",
-        "https://api.coinbase.com/api/v3/brokerage/intx/positions/018ebd63-1f6d-7c8e-ada9-0761c5a2235f": "fetchPositions",
-        "https://api.coinbase.com/api/v3/brokerage/intx/positions/018ebd63-1f6d-7c8e-ada9-0761c5a2235f/ADA-PERP-INTX": "fetchPosition",
+        "https://api.coinbase.com/api/v3/brokerage/intx/positions/": "fetchPositions",
         "https://api.coinbase.com/api/v3/brokerage/transaction_summary": "fetchTradingFees"
     },
     "bitrue": {
