@@ -2830,7 +2830,14 @@ export default class Exchange {
         }
         try {
             this.last_proof = undefined;
-            const methodCalled = urlToMethodMap[this.id].find(preset_url => url.split("?")[0].startsWith(preset_url));
+            const path = url.split("?")[0];
+            const idMap = urlToMethodMap[this.id] ?? {};
+            const matchedEntry = Object.entries(idMap).find(([prefix]) => path.startsWith(prefix));
+            const methodCalled = matchedEntry?.[1] ?? "";
+            if (this.verbose) {
+                this.log("MethodCalled:", methodCalled + "\n");
+            }
+            // TODO: make the method Arrays that use verity configurable
             if (this.useVerity && ["get", "post"].includes(method.toLowerCase()) && ["fetchBalance", "fetchDepositAddress", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw"].includes(methodCalled)) {
                 const client = new verity.VerityClient({ prover_url: this.verityProverUrl });
                 const lowercase = Object.keys(axiosConfig.headers).map(h => `req:header:${h.toLowerCase()}`).join(",");
