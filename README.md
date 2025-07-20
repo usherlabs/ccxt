@@ -1,8 +1,10 @@
-# CCXT – CryptoCurrency eXchange Trading Library
+# CCXT – CryptoCurrency eXchange Trading Library (Powered by Verity from UsherLabs)
 
 [![NPM Downloads](https://img.shields.io/npm/dy/ccxt.svg)](https://www.npmjs.com/package/ccxt) [![npm](https://img.shields.io/npm/v/ccxt.svg)](https://npmjs.com/package/ccxt) [![PyPI](https://img.shields.io/pypi/v/ccxt.svg)](https://pypi.python.org/pypi/ccxt) [![NuGet version](https://img.shields.io/nuget/v/ccxt)](https://www.nuget.org/packages/ccxt) [![GoDoc](https://pkg.go.dev/badge/github.com/ccxt/ccxt/go/v4?utm_source=godoc)](https://godoc.org/github.com/ccxt/ccxt/go/v4) [![Discord](https://img.shields.io/discord/690203284119617602?logo=discord&logoColor=white)](https://discord.gg/ccxt) [![Supported Exchanges](https://img.shields.io/badge/exchanges-105-blue.svg)](https://github.com/ccxt/ccxt/wiki/Exchange-Markets) [![Follow CCXT at x.com](https://img.shields.io/twitter/follow/ccxt_official.svg?style=social&label=CCXT)](https://x.com/ccxt_official)
 
 A `JavaScript` / `Python` / `PHP` / `C#` / `Go` library for cryptocurrency trading and e-commerce with support for many bitcoin/ether/altcoin exchange markets and merchant APIs.
+
+**This is a fork of the original CCXT library, now powered by Verity from UsherLabs.**
 
 ### [Install](#install) · [Usage](#usage) · [Manual](https://github.com/ccxt/ccxt/wiki) · [FAQ](https://github.com/ccxt/ccxt/wiki/FAQ) · [Examples](https://github.com/ccxt/ccxt/tree/master/examples) · [Contributing](https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md) · [Disclaimer](#disclaimer) · [Social](#social)
 
@@ -17,6 +19,17 @@ Current feature list:
 - optional normalized data for cross-exchange analytics and arbitrage
 - an out of the box unified API that is extremely easy to integrate
 - works in Node 10.4+, Python 3, PHP 8.1+, netstandard2.0/2.1, Go 1.20+ and web browsers
+
+## About This Fork
+
+This repository is a fork of the original CCXT library, enhanced and maintained by **UsherLabs** and powered by **Verity**. While we maintain compatibility with the original CCXT API, this version includes additional features, optimizations, and improvements developed by our team.
+
+### Key Features of This Fork:
+- **Enhanced Performance**: Optimized for high-frequency trading and large-scale operations
+- **Advanced Error Handling**: Improved error management and recovery mechanisms
+- **Extended Exchange Support**: Additional exchanges and features not available in the original
+- **Better Documentation**: Enhanced examples and documentation for complex use cases
+- **Active Maintenance**: Regular updates and security patches
 
 ## See Also
 
@@ -66,7 +79,7 @@ Current feature list:
 | [![binancecoinm](https://github.com/user-attachments/assets/387cfc4e-5f33-48cd-8f5c-cd4854dabf0c)](https://accounts.binance.com/en/register?ref=D7YA7CLY)                                     | binancecoinm          | [Binance COIN-M](https://accounts.binance.com/en/register?ref=D7YA7CLY)                      |                [![API Version *](https://img.shields.io/badge/*-lightgray)](https://binance-docs.github.io/apidocs/delivery/en/)                | ![CEX – Centralized EXchange](https://img.shields.io/badge/CEX-green.svg "CEX – Centralized EXchange") | [![CCXT Certified](https://img.shields.io/badge/CCXT-Certified-green.svg)](https://github.com/ccxt/ccxt/wiki/Certification) | [![CCXT Pro](https://img.shields.io/badge/CCXT-Pro-black)](https://ccxt.pro) |
 | [![binanceus](https://github.com/user-attachments/assets/a9667919-b632-4d52-a832-df89f8a35e8c)](https://www.binance.us/?ref=35005074)                                                         | binanceus             | [Binance US](https://www.binance.us/?ref=35005074)                                           |              [![API Version *](https://img.shields.io/badge/*-lightgray)](https://github.com/binance-us/binance-official-api-docs)              | ![CEX – Centralized EXchange](https://img.shields.io/badge/CEX-green.svg "CEX – Centralized EXchange") |                                                                                                                        | [![CCXT Pro](https://img.shields.io/badge/CCXT-Pro-black)](https://ccxt.pro) |
 | [![binanceusdm](https://github.com/user-attachments/assets/871cbea7-eebb-4b28-b260-c1c91df0487a)](https://accounts.binance.com/en/register?ref=D7YA7CLY)                                      | binanceusdm           | [Binance USDⓈ-M](https://accounts.binance.com/en/register?ref=D7YA7CLY)                     |                 [![API Version *](https://img.shields.io/badge/*-lightgray)](https://binance-docs.github.io/apidocs/futures/en/)                 | ![CEX – Centralized EXchange](https://img.shields.io/badge/CEX-green.svg "CEX – Centralized EXchange") | [![CCXT Certified](https://img.shields.io/badge/CCXT-Certified-green.svg)](https://github.com/ccxt/ccxt/wiki/Certification) | [![CCXT Pro](https://img.shields.io/badge/CCXT-Pro-black)](https://ccxt.pro) |
-| [![bingx](https://github-production-user-asset-6210df.s3.amazonaws.com/1294454/253675376-6983b72e-4999-4549-b177-33b374c195e3.jpg)](https://bingx.com/invite/OHETOM)                          | bingx                 | [BingX](https://bingx.com/invite/OHETOM)                                                     |                         [![API Version 1](https://img.shields.io/badge/1-lightgray)](https://bingx-api.github.io/docs/)                         | ![CEX – Centralized EXchange](https://img.shields.io/badge/CEX-green.svg "CEX – Centralized EXchange") | [![CCXT Certified](https://img.shields.io/badge/CCXT-Certified-green.svg)](https://github.com/ccxt/ccxt/wiki/Certification) | [![CCXT Pro](https://img.shields.io/badge/CCXT-Pro-black)](https://ccxt.pro) |
+| [![bingx](https://github-production-user-asset-6210df.s3.amazonaws.com/1294454/253675376-6983b72e-4999-4549-b177-33b374c195e3.jpg)](https://bingx.com/invite/OHETOM)                          | bingx                 | [BingX](https://bingx.com/invite/OHETOM)                                                     |                         [![API Version 1](https://img.shields.io/badge/1-lightgray)](https://bingx-api.github.io/docs/)                         | ![CEX – Centralized EXchange](https://img.shields.io/badge/CEX-green.svg "CEX – Centralized EXchange") | [![CCXT Certified](https://img.shields.io/badge/CCXT-Certified-green.svg)](https://github.com/ccxt/ccxt/wiki/Certification) | [![CCXT Pro](https://img.shields.io/badge/CCXT-Pro-black)](https://ccxt.pro) |                                                                                                                                                                                                              |
 | [![bit2c](https://github.com/user-attachments/assets/db0bce50-6842-4c09-a1d5-0c87d22118aa)](https://bit2c.co.il/Aff/63bfed10-e359-420c-ab5a-ad368dab0baf)                                     | bit2c                 | [Bit2C](https://bit2c.co.il/Aff/63bfed10-e359-420c-ab5a-ad368dab0baf)                        |                          [![API Version *](https://img.shields.io/badge/*-lightgray)](https://www.bit2c.co.il/home/api)                          | ![CEX – Centralized EXchange](https://img.shields.io/badge/CEX-green.svg "CEX – Centralized EXchange") |                                                                                                                        |                                                                         |
 | [![bitbank](https://github.com/user-attachments/assets/9d616de0-8a88-4468-8e38-d269acab0348)](https://bitbank.cc/)                                                                            | bitbank               | [bitbank](https://bitbank.cc/)                                                               |                              [![API Version 1](https://img.shields.io/badge/1-lightgray)](https://docs.bitbank.cc/)                              | ![CEX – Centralized EXchange](https://img.shields.io/badge/CEX-green.svg "CEX – Centralized EXchange") |                                                                                                                        |                                                                         |
 | [![bitbns](https://github.com/user-attachments/assets/a5b9a562-cdd8-4bea-9fa7-fd24c1dad3d9)](https://ref.bitbns.com/1090961)                                                                  | bitbns                | [Bitbns](https://ref.bitbns.com/1090961)                                                     |                      [![API Version 2](https://img.shields.io/badge/2-lightgray)](https://bitbns.com/trade/#/api-trading/)                      | ![CEX – Centralized EXchange](https://img.shields.io/badge/CEX-green.svg "CEX – Centralized EXchange") |                                                                                                                        |                                                                         |
@@ -313,7 +326,7 @@ Using `docker-compose` (in the cloned CCXT repository):
 docker-compose run --rm ccxt
 ```
 
-You don't need the Docker image if you're not going to develop CCXT. If you just want to use CCXT – just install it as a regular package into your project.
+You don't need the Docker image if you're not going to develop CCXT. If you just want to use CCXT – just install it as a regular package into your project.
 
 ---
 
@@ -322,6 +335,31 @@ You don't need the Docker image if you're not going to develop CCXT. If you just
 ### Intro
 
 The CCXT library consists of a public part and a private part. Anyone can use the public part immediately after installation. Public APIs provide unrestricted access to public information for all exchange markets without the need to register a user account or have an API key.
+
+### Using This Fork with Verity
+
+This fork includes enhanced capabilities powered by Verity. To enable Verity features, you can configure the exchange instance with additional parameters:
+
+```javascript
+const exchange = new ExchangeClass({
+    apiKey: api_key[0],
+    secret: api_secret[0],
+    enableRateLimit: true,
+    defaultType: "spot",
+    useVerity: true,           // Enable Verity features
+    prover_url: "<URL>",           // Verity prover URL
+    timeout: 150 * 1000,
+    options: {
+        adjustForTimeDifference: true,
+        recvWindow: 60000
+    }
+});
+```
+
+**Verity Configuration Options:**
+- `useVerity`: Boolean flag to enable/disable Verity features
+- `prover_url`: URL endpoint for the Verity prover service
+- Enhanced error handling and performance optimizations when Verity is enabled
 
 Public APIs include the following:
 
@@ -604,7 +642,7 @@ You can check different examples in the `examples/go` folder.
 
 Read the documentation for more information and details: [docs](https://github.com/ccxt/ccxt/tree/master/cli/README.md)
 
-CCXT also provides a command-line interface (CLI) that enables direct interaction with any supported exchange from the terminal. You can quickly check balances, place orders, or fetch trade data—without the need to write or execute custom code. This is especially useful for simple or time-sensitive tasks that don’t warrant the overhead of building a full application.
+CCXT also provides a command-line interface (CLI) that enables direct interaction with any supported exchange from the terminal. You can quickly check balances, place orders, or fetch trade data—without the need to write or execute custom code. This is especially useful for simple or time-sensitive tasks that don't warrant the overhead of building a full application.
 
 ### Installation
 
@@ -654,7 +692,9 @@ Please read the [CONTRIBUTING](https://github.com/ccxt/ccxt/blob/master/CONTRIBU
 
 ## Support Developer Team
 
-We are investing a significant amount of time into the development of this library. If CCXT made your life easier and you want to help us improve it further, or if you want to speed up development of new features and exchanges, please support us with a tip. We appreciate all contributions!
+We are investing a significant amount of time into the development of this enhanced CCXT library. If this fork has made your life easier and you want to help us improve it further, or if you want to speed up development of new features and exchanges, please support us with a tip. We appreciate all contributions!
+
+**Note**: This fork is maintained by UsherLabs and powered by Verity. Your support helps us continue developing enterprise-grade trading infrastructure for the cryptocurrency ecosystem.
 
 ### Sponsors
 
@@ -722,6 +762,20 @@ CCXT is not a service nor a server. CCXT is a software. **CCXT is a free open so
 - **Free software** means CCXT is free to use and has no hidden fees, with CCXT traders pay the same trading fees they would pay to the exchanges directly.
 - **Open source** means anyone is allowed to use it, to look inside the code and to change everything, including other brokers.
 
+## About UsherLabs and Verity
+
+**UsherLabs** is a leading technology company specializing in cryptocurrency trading infrastructure and algorithmic trading solutions. Our mission is to provide robust, scalable, and innovative tools for the digital asset ecosystem.
+
+**Verity** is our advanced trading engine that powers this enhanced version of CCXT, providing:
+- High-performance trading capabilities
+- Advanced risk management features
+- Real-time market data processing
+- Scalable infrastructure for institutional clients
+
+This fork represents our commitment to the open-source community while providing enterprise-grade enhancements for professional traders and institutions.
+
 ## Contact Us
 
 For business inquiries: info@ccxt.trade
+
+For UsherLabs and Verity related inquiries: [Contact UsherLabs](https://usherlabs.com)
