@@ -3158,7 +3158,6 @@ export default class Exchange {
                 const response = await client
                     .get(axiosConfig.url, axiosConfig)
                     .redact(lowercase);
-                this.log("verityProof:",response.proof,"\n\n","verityNotaryPub:",response.notary_pub_key,"\n");
                 this.last_proof=response.proof
                 return this.handleRestResponse(response, url, method, headers, body);
             }else{
