@@ -51,33 +51,14 @@ async function vssEverything () {
     vss ('./dist/ccxt.browser.js',                       "const version = '{version}'",                            version)
     vss ('./dist/ccxt.browser.min.js',                   "const ps=\"{version}\"",                                 version)
     vss ('./dist/cjs/ccxt.js',                           "const version = '{version}'",                            version)
-    vss ('./php/Exchange.php',                           "$version = '{version}'",                                 version)
-    vss ('./php/async/Exchange.php',                     "VERSION = '{version}'",                                  version)
-    vss ('./php/async/Exchange.php',                     "$version = '{version}'",                                 version)
-    vss ('./php/Exchange.php',                           "VERSION = '{version}'",                                  version)
-    vss ('./python/ccxt/__init__.py',                    "__version__ = '{version}'",                              version)
-    vss ('./python/ccxt/base/exchange.py',               "__version__ = '{version}'",                              version)
-    vss ('./python/ccxt/async_support/__init__.py',      "__version__ = '{version}'",                              version)
-    vss ('./python/ccxt/async_support/base/exchange.py', "__version__ = '{version}'",                              version)
-    vss ('./python/ccxt/pro/__init__.py',                "__version__ = '{version}'",                              version)
-    vss ('./cs/ccxt/base/Exchange.MetaData.cs',          "public static string ccxtVersion = \"{version}\";",      version)
-    vss ('./cs/ccxt/ccxt.csproj',                         "<PackageVersion>{version}</PackageVersion>",            version)
-    vss ('./cs/ccxt/ccxt.csproj',                         "<AssemblyVersion>{version}</AssemblyVersion>",          version)
-    vss ('./cs/ccxt/ccxt.csproj',                         "<FileVersion>{version}</FileVersion>",                  version)
+
     vss ('./go/v4/exchange_metadata.go',                 "var Version string = \"{version}\"",                  version)
     // vss ('./python/ccxt/pro/base/exchange.py',           "__version__ = '{version}'",   version)
 
     vss ('./README.md',       "ccxt@{version}", version, true)
     vss ('./wiki/Install.md', "ccxt@{version}", version, true)
 
-    const pythonFiles = [
-        'package.json',
-        'LICENSE.txt',
-        'keys.json',
-        'README.md',
-    ]
 
-    pythonFiles.forEach ((fileName) => copyFile ('./' + fileName, './python/' + fileName))
 
     log.bright.green ('Version single-sourced successfully.')
 }

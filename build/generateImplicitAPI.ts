@@ -5,10 +5,6 @@ import log from 'ololog'
 
 // const JS_PATH = './js/src/abstract/';
 const TS_PATH = './ts/src/abstract/';
-const PHP_PATH = './php/abstract/'
-const ASYNC_PHP_PATH = './php/async/abstract/'
-const CSHARP_PATH = './cs/ccxt/api/';
-const PY_PATH = './python/ccxt/abstract/'
 const GO_PATH = './go/v4/'
 const IDEN = '    ';
 
@@ -16,10 +12,7 @@ const IDEN = '    ';
 let storedCamelCaseMethods = {};
 let storedUnderscoreMethods = {};
 let storedTypeScriptMethods = {};
-let storedCSharpMethods = {};
 let storedContext = {};
-let storedPhpMethods = {};
-let storedPyMethods = {};
 let storedGoMethods = {};
 
 
@@ -27,9 +20,6 @@ const [,, ...args] = process.argv
 const langKeys = {
     '--ts': false,
     '--js': false,
-    '--php': false,
-    '--python': false,
-    '--csharp': false,
     '--go': false,
 }
 
@@ -122,52 +112,7 @@ function generateImplicitMethodNames(id, api, paths = []){
     }
 }
 
-//-------------------------------------------------------------------------
 
-function createImplicitMethodsPython(){
-    const exchanges = Object.keys(storedCamelCaseMethods);
-    for (const index in exchanges) {
-        const exchange = exchanges[index];
-        const camelCaseMethods = storedCamelCaseMethods[exchange];
-        const underscoreMethods = storedUnderscoreMethods[exchange]
-
-        const pythonMethods = underscoreMethods.map ((method, idx) => {
-            const i = idx % underscoreMethods.length
-            const camelCaseMethod = camelCaseMethods[i]
-            const context = storedContext[exchange][i]
-            return `${IDEN}${method} = ${camelCaseMethod} = Entry('${context.endpoint}', ${context.pyPath}, '${context.method}', ${context.pyConfig})`
-        })
-        storedPyMethods[exchange] = storedPyMethods[exchange].concat (pythonMethods)
-    }
-}
-
-// -------------------------------------------------------------------------
-
-function createImplicitMethodsPhp(){
-    const exchanges = Object.keys(storedCamelCaseMethods);
-    for (const index in exchanges) {
-        const exchange = exchanges[index];
-        const camelCaseMethods = storedCamelCaseMethods[exchange];
-        const underscoreMethods = storedUnderscoreMethods[exchange]
-
-        const typeScriptMethods = camelCaseMethods.map (method => {
-            return `${IDEN}${method} (params?: {}): Promise<implicitReturnType>;`
-        });
-        const phpMethods = underscoreMethods.concat (camelCaseMethods).map ((method, idx) => {
-            const i = idx % underscoreMethods.length
-            const context = storedContext[exchange][i]
-            return `${IDEN}public function ${method}($params = array()) {
-${IDEN}${IDEN}return $this->request('${context.endpoint}', ${context.phpPath}, '${context.method}', $params, null, null, ${context.phpConfig});
-${IDEN}}`
-        })
-
-        typeScriptMethods.push ('}')
-        phpMethods.push ('}')
-        const footer = storedTypeScriptMethods[exchange].pop ()
-        storedTypeScriptMethods[exchange] = storedTypeScriptMethods[exchange].concat (typeScriptMethods).concat ([ footer ])
-        storedPhpMethods[exchange] = storedPhpMethods[exchange].concat (phpMethods)
-    }
-}
 
 // -------------------------------------------------------------------------
 
@@ -186,27 +131,7 @@ function createImplicitMethodsTs(){
     }
 }
 
-// -------------------------------------------------------------------------
 
-function createImplicitMethodsCSharp(){
-    const exchanges = Object.keys(storedCamelCaseMethods);
-    for (const index in exchanges) {
-        const exchange = exchanges[index];
-        const methodNames = storedCamelCaseMethods[exchange];
-
-        const methods =  methodNames.map(method=> {
-            return [
-                `${IDEN}public async Task<object> ${method} (object parameters = null)`,
-                `${IDEN}{`,
-                `${IDEN}${IDEN}return await this.callAsync ("${method}",parameters);`,
-                `${IDEN}}`,
-                ``,
-            ].join('\n')
-        });
-        methods.push ('}')
-       storedCSharpMethods[exchange] = storedCSharpMethods[exchange].concat (methods)
-    }
-}
 
 //-------------------------------------------------------------------------
 
@@ -264,13 +189,7 @@ async function unlinkFiles (path, extension) {
     await Promise.all (abstract.filter (file => file !== '__init__.py' && file.match (ext) && !exchanges.includes (file.replace (ext, ''))).map (basename => promisedUnlinkFile (path + basename)))
 }
 
-// -------------------------------------------------------------------------
 
-async function editAPIFilesCSharp(){
-    const exchanges = Object.keys(storedCamelCaseMethods);
-    const files = exchanges.map(ex => CSHARP_PATH + ex + '.cs');
-    await Promise.all(files.map((path, idx) => promisedWriteFile(path, storedCSharpMethods[exchanges[idx]].join ('\n'))))
-}
 
 // -------------------------------------------------------------------------
 
@@ -293,37 +212,7 @@ function createTypescriptHeader(instance, parent){
     storedTypeScriptMethods[exchange] = [ getPreamble (), importType, importParent, '', typescriptHeader, typescriptFooter ];
 }
 
-//-------------------------------------------------------------------------
 
-function createPhpHeader(instance, parent){
-    const exchange = instance.id;
-    const phpParent = (parent === 'Exchange') ? '\\ccxt\\Exchange' : '\\ccxt\\' + parent;
-    const phpHeader = `abstract class ${instance.id} extends ${phpParent} {`
-    const phpPreamble = `<?php
-
-namespace ccxt\\abstract;
-
-// PLEASE DO NOT EDIT THIS FILE, IT IS GENERATED AND WILL BE OVERWRITTEN:
-// https://github.com/ccxt/ccxt/blob/master/CONTRIBUTING.md#how-to-contribute-code
-`
-    storedPhpMethods[exchange] = [ phpPreamble, '', phpHeader ]
-}
-
-//-------------------------------------------------------------------------
-
-function createPyHeader(instance, parent){
-    const exchange = instance.id;
-    const pyImports = 'from ccxt.base.types import Entry'
-    const pyHeader = 'class ImplicitAPI:'
-    storedPyMethods[exchange] = [ pyImports, '', '', pyHeader ]
-}
-// -------------------------------------------------------------------------
-
-function createCSharpHeader(exchange, parent){
-    const namespace = 'namespace ccxt;'
-    const header = `public partial class ${exchange.id} : ${parent}\n{\n    public ${exchange.id} (object args = null): base(args) {}\n`;
-    storedCSharpMethods[exchange.id] = [ getPreamble(), namespace, '', header];
-}
 
 // -------------------------------------------------------------------------
 
@@ -346,9 +235,6 @@ function populateImplicitMethods(exchanges: string[]) {
         }
         const parent = Object.getPrototypeOf (Object.getPrototypeOf(instance)).constructor.name
         createTypescriptHeader(instance, parent);
-        createPhpHeader(instance, parent);
-        createCSharpHeader(instance, parent);
-        createPyHeader(instance, parent);
         createGoHeader(instance, parent);
 
         storedCamelCaseMethods[exchange] = []
@@ -389,31 +275,7 @@ async function main() {
 
     }
 
-    if (shouldGenerateAll || langKeys['--python']) {
-        createImplicitMethodsPython ()
-        await editFiles (PY_PATH, storedPyMethods, '.py');
-        log.bright.cyan ('Python implicit api methods completed!')
 
-    }
-
-    if (shouldGenerateAll || langKeys['--php']) {
-        createImplicitMethodsPhp ()
-        await editFiles (PHP_PATH, storedPhpMethods, '.php');
-        log.bright.cyan ('PHP sync implicit api methods completed!')
-        // one more time for the async php
-        Object.values (storedPhpMethods).forEach (x => {
-            x[0] = x[0].replace (/ccxt\\abstract/, 'ccxt\\async\\abstract');
-            x[2] = x[2].replace (/ccxt\\/, 'ccxt\\async\\')
-        })
-        await editFiles (ASYNC_PHP_PATH, storedPhpMethods, '.php');
-        log.bright.cyan ('PHP async implicit api methods completed!')
-    }
-
-    if (shouldGenerateAll || langKeys['--csharp']) {
-        createImplicitMethodsCSharp()
-        await editAPIFilesCSharp();
-        log.bright.cyan ('C# implicit api methods completed!')
-    }
 
 
     if (shouldGenerateAll || langKeys['--go']) {
