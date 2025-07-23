@@ -2468,6 +2468,7 @@ export default class Exchange {
     httpsAgent = undefined;
     useVerity: boolean = false;
     verityProverUrl = "http://localhost:8080";
+    verityMethods: string[] = ["fetchBalance", "fetchDepositAddress", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw", "fetchFundingHistory", "fetchWithdrawals", "fetchWithdrawal"];
 
     minFundingAddressLength: Int = 1 // used in checkAddress
     substituteCommonCurrencyCodes: boolean = true  // reserved
@@ -3157,7 +3158,7 @@ export default class Exchange {
             }
 
             // TODO: make the method Arrays that use verity configurable
-            if (this.useVerity && ["get", "post"].includes(method.toLowerCase()) && ["fetchBalance", "fetchDepositAddress", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw"].includes(methodCalled)) {
+            if (this.useVerity && ["get", "post"].includes(method.toLowerCase()) && this.verityMethods.includes(methodCalled)) {
                 const client = new verity.VerityClient({ prover_url: this.verityProverUrl });
                 const lowercase = Object.keys(axiosConfig.headers).map(h => `req:header:${h.toLowerCase()}`).join(",");
                 const response = await client

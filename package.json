@@ -1,6 +1,6 @@
 {
   "name": "@usherlabs/ccxt",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "A JavaScript cryptocurrency trading library with support for 100+ exchanges powered by verity",
   "unpkg": "dist/ccxt.browser.min.js",
   "type": "module",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ccxt/ccxt.git"
+    "url": "git+https://github.com/usherlabs/ccxt.git"
   },
   "readme": "README.md",
   "scripts": {

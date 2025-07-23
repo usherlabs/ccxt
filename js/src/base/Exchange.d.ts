@@ -59,6 +59,7 @@ export default class Exchange {
     httpsAgent: any;
     useVerity: boolean;
     verityProverUrl: string;
+    verityMethods: string[];
     minFundingAddressLength: Int;
     substituteCommonCurrencyCodes: boolean;
     quoteJsonNumbers: boolean;
