@@ -49,6 +49,7 @@ export default class Exchange {
     wss_proxy: string;
     wsSocksProxy: string;
     ws_socks_proxy: string;
+    redact_exclusion: string;
     userAgents: any;
     headers: any;
     origin: string;
