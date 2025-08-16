@@ -1,6 +1,6 @@
 {
   "name": "@usherlabs/ccxt",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "A JavaScript cryptocurrency trading library with support for 100+ exchanges powered by verity",
   "unpkg": "dist/ccxt.browser.min.js",
   "type": "module",
