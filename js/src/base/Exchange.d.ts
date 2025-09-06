@@ -60,6 +60,9 @@ export default class Exchange {
     useVerity: boolean;
     verityProverUrl: string;
     verityMethods: string[];
+    verityRequestOptions: {
+        redact: string;
+    };
     minFundingAddressLength: Int;
     substituteCommonCurrencyCodes: boolean;
     quoteJsonNumbers: boolean;
@@ -332,6 +335,9 @@ export default class Exchange {
     setProxyAgents(httpProxy: any, httpsProxy: any, socksProxy: any): any;
     loadHttpProxyAgent(): Promise<any>;
     getHttpAgentIfNeeded(url: any): any;
+    addVerityRequestOptions(options: {
+        redact: string;
+    }): void;
     fetch(url: any, method?: string, headers?: any, body?: any): Promise<any>;
     parseJson(jsonString: any): any;
     getResponseHeaders(response: any): {};

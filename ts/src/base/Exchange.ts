@@ -2466,9 +2466,13 @@ export default class Exchange {
     nodeHttpModuleLoaded: boolean = false;
     httpAgent = undefined;
     httpsAgent = undefined;
+
+    // ! Usher Labs Addition
     useVerity: boolean = false;
     verityProverUrl = "http://localhost:8080";
     verityMethods: string[] = ["fetchBalance", "fetchDepositAddress", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw", "fetchFundingHistory", "fetchWithdrawals", "fetchWithdrawal"];
+    verityRequestOptions: { redact: string } = { redact: "" };
+    //! ------------------------------
 
     minFundingAddressLength: Int = 1 // used in checkAddress
     substituteCommonCurrencyCodes: boolean = true  // reserved
@@ -2544,6 +2548,7 @@ export default class Exchange {
     last_request_body = undefined
     last_request_url = undefined
     last_request_path = undefined
+    // ! Usher Labs Addition
     last_proof: string | undefined = undefined
 
     id: string = 'Exchange';
@@ -3060,7 +3065,12 @@ export default class Exchange {
         return undefined;
     }
 
+    // ! Usher Labs Addition
+    addVerityRequestOptions(options: { redact: string }) {
+        this.verityRequestOptions = options;
+    }
 
+    // ! Usher Labs Addition: Modified to use Verity if instantiated as such. Includes appended headers.
     async fetch(url, method = 'GET', headers: any = undefined, body: any = undefined) {
 
         // load node-http(s) modules only on first call
@@ -3144,7 +3154,8 @@ export default class Exchange {
         }
 
         try {
-            this.last_proof = undefined;
+            this.last_proof = undefined; // TODO: I wonder if there's a race condition on last_proof, where another request's proof is passed instead? We should test this.
+
             const path = url.split("?")[0];
             const idMap = urlToMethodMap[this.id] ?? {};
 
@@ -3157,13 +3168,11 @@ export default class Exchange {
                 this.log("MethodCalled:", methodCalled+ "\n");
             }
 
-            // TODO: make the method Arrays that use verity configurable
             if (this.useVerity && ["get", "post"].includes(method.toLowerCase()) && this.verityMethods.includes(methodCalled)) {
                 const client = new verity.VerityClient({ prover_url: this.verityProverUrl });
-                const lowercase = Object.keys(axiosConfig.headers).map(h => `req:header:${h.toLowerCase()}`).join(",");
                 const response = await client
                     .get(axiosConfig.url, axiosConfig)
-                    .redact(lowercase);
+                    .redact(this.verityRequestOptions.redact || ""); // ? Should Verity be configured for use on a per request basis always?
                 if (this.verbose) {
                     this.log("verityProof:", response.proof, "\n\n", "verityNotaryPub:", response.notary_pub_key, "\n");
                 }
