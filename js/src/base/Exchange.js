@@ -2268,9 +2268,12 @@ export default class Exchange {
         this.nodeHttpModuleLoaded = false;
         this.httpAgent = undefined;
         this.httpsAgent = undefined;
+        // ! Usher Labs Addition
         this.useVerity = false;
         this.verityProverUrl = "http://localhost:8080";
         this.verityMethods = ["fetchBalance", "fetchDepositAddress", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw", "fetchFundingHistory", "fetchWithdrawals", "fetchWithdrawal"];
+        this.verityRequestOptions = { redact: "" };
+        //! ------------------------------
         this.minFundingAddressLength = 1; // used in checkAddress
         this.substituteCommonCurrencyCodes = true; // reserved
         this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
@@ -2308,6 +2311,7 @@ export default class Exchange {
         this.last_request_body = undefined;
         this.last_request_url = undefined;
         this.last_request_path = undefined;
+        // ! Usher Labs Addition
         this.last_proof = undefined;
         this.id = 'Exchange';
         this.markets = undefined;
@@ -2750,6 +2754,11 @@ export default class Exchange {
         }
         return undefined;
     }
+    // ! Usher Labs Addition
+    addVerityRequestOptions(options) {
+        this.verityRequestOptions = options;
+    }
+    // ! Usher Labs Addition: Modified to use Verity if instantiated as such. Includes appended headers.
     async fetch(url, method = 'GET', headers = undefined, body = undefined) {
         // load node-http(s) modules only on first call
         if (isNode) {
@@ -2830,7 +2839,7 @@ export default class Exchange {
             }
         }
         try {
-            this.last_proof = undefined;
+            this.last_proof = undefined; // TODO: I wonder if there's a race condition on last_proof, where another request's proof is passed instead? We should test this.
             const path = url.split("?")[0];
             const idMap = urlToMethodMap[this.id] ?? {};
             const matchedEntry = Object.entries(idMap).find(([prefix]) => path.startsWith(prefix));
@@ -2838,13 +2847,11 @@ export default class Exchange {
             if (this.verbose) {
                 this.log("MethodCalled:", methodCalled + "\n");
             }
-            // TODO: make the method Arrays that use verity configurable
             if (this.useVerity && ["get", "post"].includes(method.toLowerCase()) && this.verityMethods.includes(methodCalled)) {
                 const client = new verity.VerityClient({ prover_url: this.verityProverUrl });
-                const lowercase = Object.keys(axiosConfig.headers).map(h => `req:header:${h.toLowerCase()}`).join(",");
                 const response = await client
                     .get(axiosConfig.url, axiosConfig)
-                    .redact(lowercase);
+                    .redact(this.verityRequestOptions.redact || ""); // ? Should Verity be configured for use on a per request basis always?
                 if (this.verbose) {
                     this.log("verityProof:", response.proof, "\n\n", "verityNotaryPub:", response.notary_pub_key, "\n");
                 }
