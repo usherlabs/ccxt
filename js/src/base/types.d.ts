@@ -223,6 +223,9 @@ export interface Balance {
     total: Num;
     debt?: Num;
 }
+export interface FreeBalance {
+    [symbol: string]: Num;
+}
 export interface BalanceAccount {
     free: Str;
     used: Str;
