@@ -2452,7 +2452,7 @@ export default class Exchange {
     wss_proxy: string;
     wsSocksProxy: string;
     ws_socks_proxy: string;
-    redact_header_that_includes_keyword ="key"
+    redact_header_that_includes_keyword ="secret"
     redact = "";
     //
     userAgents: any = {
