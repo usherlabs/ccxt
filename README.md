@@ -1,4 +1,4 @@
-# CCXT – CryptoCurrency eXchange Trading Library
+# Usherlab's CCXT – CryptoCurrency eXchange Trading Library
 
 [![NPM Downloads](https://img.shields.io/npm/dy/ccxt.svg)](https://www.npmjs.com/package/ccxt) [![npm](https://img.shields.io/npm/v/ccxt.svg)](https://npmjs.com/package/ccxt) [![Discord](https://img.shields.io/discord/690203284119617602?logo=discord&logoColor=white)](https://discord.gg/ccxt) [![Supported Exchanges](https://img.shields.io/badge/exchanges-105-blue.svg)](https://github.com/ccxt/ccxt/wiki/Exchange-Markets) [![Follow CCXT at x.com](https://img.shields.io/twitter/follow/ccxt_official.svg?style=social&label=CCXT)](https://x.com/ccxt_official)
 
@@ -26,18 +26,18 @@ It is intended to be used by **coders, developers, technically-skilled traders, 
 
 CCXT currently supports **105+ cryptocurrency exchanges** including:
 
-| Exchange | Type | Status | Pro |
-|----------|------|--------|-----|
-| Binance | CEX | ✅ Certified | ✅ |
-| Coinbase | CEX | ✅ | ✅ |
-| Kraken | CEX | ✅ | ✅ |
-| OKX | CEX | ✅ Certified | ✅ |
-| Bybit | CEX | ✅ Certified | ✅ |
-| KuCoin | CEX | ✅ Certified | ✅ |
-| Gate.io | CEX | ✅ Certified | ✅ |
-| HTX | CEX | ✅ Certified | ✅ |
-| MEXC | CEX | ✅ Certified | ✅ |
-| Bitget | CEX | ✅ Certified | ✅ |
+| Exchange | Type | Status       | Pro |
+| -------- | ---- | ------------ | --- |
+| Binance  | CEX  | ✅ Certified | ✅  |
+| Coinbase | CEX  | ✅           | ✅  |
+| Kraken   | CEX  | ✅           | ✅  |
+| OKX      | CEX  | ✅ Certified | ✅  |
+| Bybit    | CEX  | ✅ Certified | ✅  |
+| KuCoin   | CEX  | ✅ Certified | ✅  |
+| Gate.io  | CEX  | ✅ Certified | ✅  |
+| HTX      | CEX  | ✅ Certified | ✅  |
+| MEXC     | CEX  | ✅ Certified | ✅  |
+| Bitget   | CEX  | ✅ Certified | ✅  |
 
 *For a complete list of all supported exchanges, see the [Exchange Markets](https://github.com/ccxt/ccxt/wiki/Exchange-Markets) page.*
 
@@ -54,7 +54,6 @@ npm install @usherlabs/ccxt
 ```bash
 yarn add @usherlabs/ccxt
 ```
-
 
 ## Quick Start
 
@@ -76,16 +75,16 @@ async function getMarketData() {
     try {
         // Load markets
         await exchange.loadMarkets();
-        
+      
         // Get ticker
         const ticker = await exchange.fetchTicker('BTC/USDT');
         console.log('BTC/USDT Price:', ticker.last);
-        
+      
         // Get order book
         const orderbook = await exchange.fetchOrderBook('BTC/USDT');
         console.log('Best bid:', orderbook.bids[0]);
         console.log('Best ask:', orderbook.asks[0]);
-        
+      
     } catch (error) {
         console.error('Error:', error.message);
     }
@@ -134,13 +133,13 @@ async function placeOrder() {
             0.001,       // amount
             50000        // price
         );
-        
+      
         console.log('Order placed:', order.id);
-        
+      
         // Check order status
         const orderStatus = await exchange.fetchOrder(order.id, 'BTC/USDT');
         console.log('Order status:', orderStatus.status);
-        
+      
     } catch (error) {
         console.error('Trading error:', error.message);
     }
@@ -168,6 +167,7 @@ const exchange = new ccxt.binance({
 ```
 
 **Verity Configuration Options:**
+
 - `useVerity`: Boolean flag to enable/disable Verity features
 - `verityProxyUrl`: URL endpoint for the Verity proxy service
 - Enhanced error handling and performance optimizations when Verity is enabled
