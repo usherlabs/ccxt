@@ -2254,7 +2254,8 @@ export default class Exchange {
         this.countries = undefined;
         this.userAgent = undefined;
         this.user_agent = undefined;
-        this.redact_exclusion = "api-key";
+        this.redact_header_that_includes_keyword = "key";
+        this.redact = "";
         //
         this.userAgents = {
             'chrome': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
@@ -2842,10 +2843,10 @@ export default class Exchange {
             // TODO: make the method Arrays that use verity configurable
             if (this.useVerity && ["get", "post"].includes(method.toLowerCase()) && this.verityMethods.includes(methodCalled)) {
                 const client = new verity.VerityClient({ prover_url: this.verityProverUrl });
-                const lowercase = Object.keys(axiosConfig.headers).filter(header => !header.toLowerCase().includes(this.redact_exclusion.toLowerCase())).map(h => `req:header:${h.toLowerCase()}`).join(",");
+                const lowercase = Object.keys(axiosConfig.headers).filter(header => header.toLowerCase().includes(this.redact_header_that_includes_keyword.toLowerCase())).map(h => `req:header:${h.toLowerCase()}`).join(",");
                 const response = await client
                     .get(axiosConfig.url, axiosConfig)
-                    .redact(lowercase);
+                    .redact(lowercase + this.redact);
                 if (this.verbose) {
                     this.log("verityProof:", response.proof, "\n\n", "verityNotaryPub:", response.notary_pub_key, "\n");
                 }
@@ -2907,7 +2908,7 @@ export default class Exchange {
                 this.last_http_response = responseBuffer;
             }
             if (this.verbose) {
-                this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "ZIP redacted", "\n");
+                this.log("handleRestResponse:\n", this.id, method, url, response.status, response.statusText, "\nResponseHeaders:\n", responseHeaders, "\n redacted", "\n");
             }
             // no error handler needed, because it would not be a zip response in case of an error
             return responseBuffer;
