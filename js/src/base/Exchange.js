@@ -2267,12 +2267,7 @@ export default class Exchange {
         this.nodeHttpModuleLoaded = false;
         this.httpAgent = undefined;
         this.httpsAgent = undefined;
-        // ! Usher Labs Addition
-        this.useVerity = false;
-        this.verityProverUrl = "http://localhost:8080";
-        this.verityMethods = ["fetchBalance", "fetchDepositAddress", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw", "fetchFundingHistory", "fetchWithdrawals", "fetchWithdrawal"];
-        this.verityRequestOptions = { redact: "" };
-        //! ------------------------------
+        // ! --------------------------------
         this.minFundingAddressLength = 1; // used in checkAddress
         this.substituteCommonCurrencyCodes = true; // reserved
         this.quoteJsonNumbers = true; // treat numbers in json as quoted precise strings
@@ -2310,8 +2305,6 @@ export default class Exchange {
         this.last_request_body = undefined;
         this.last_request_url = undefined;
         this.last_request_path = undefined;
-        // ! Usher Labs Addition
-        this.last_proof = undefined;
         this.id = 'Exchange';
         this.markets = undefined;
         this.features = undefined;
@@ -2525,7 +2518,6 @@ export default class Exchange {
         this.last_request_body = undefined;
         this.last_request_url = undefined;
         this.last_request_path = undefined;
-        this.last_proof = undefined;
         // camelCase and snake_notation support
         const unCamelCaseProperties = (obj = this) => {
             if (obj !== null) {
@@ -2754,10 +2746,11 @@ export default class Exchange {
         return undefined;
     }
     // ! Usher Labs Addition
-    addVerityRequestOptions(options) {
-        this.verityRequestOptions = options;
+    setHttpClientOverride(client, predicate) {
+        this.httpClientOverride = client;
+        this.httpOverridePredicate = predicate;
     }
-    // ! Usher Labs Addition: Modified to use Verity if instantiated as such. Includes appended headers.
+    // ! Usher Labs Addition: Modified to use an Axios-like override HTTP client if instantiated.
     async fetch(url, method = 'GET', headers = undefined, body = undefined) {
         // load node-http(s) modules only on first call
         if (isNode) {
@@ -2838,7 +2831,7 @@ export default class Exchange {
             }
         }
         try {
-            this.last_proof = undefined; // TODO: I wonder if there's a race condition on last_proof, where another request's proof is passed instead? We should test this.
+            //
             const path = url.split("?")[0];
             const idMap = urlToMethodMap[this.id] ?? {};
             const matchedEntry = Object.entries(idMap).find(([prefix]) => path.startsWith(prefix));
@@ -2846,22 +2839,21 @@ export default class Exchange {
             if (this.verbose) {
                 this.log("MethodCalled:", methodCalled + "\n");
             }
-            if (this.useVerity && ["get", "post"].includes(method.toLowerCase()) && this.verityMethods.includes(methodCalled)) {
-                const { default: verity } = await import(/* webpackIgnore: true */ '@usherlabs/verity-client');
-                const client = new verity.VerityClient({ prover_url: this.verityProverUrl });
-                const response = await client
-                    .get(axiosConfig.url, axiosConfig)
-                    .redact(this.verityRequestOptions.redact || ""); // ? Should Verity be configured for use on a per request basis always?
-                if (this.verbose) {
-                    this.log("verityProof:", response.proof, "\n\n", "verityNotaryPub:", response.notary_pub_key, "\n");
-                }
-                this.last_proof = response.proof;
+            const shouldOverride = this.httpClientOverride && (this.httpOverridePredicate
+                ? this.httpOverridePredicate({ method, methodCalled, url })
+                : true);
+            if (this.httpClientOverride && shouldOverride) {
+                const response = await this.httpClientOverride({
+                    method,
+                    url: axiosConfig.url,
+                    config: axiosConfig,
+                    data: axiosConfig.data,
+                    meta: { methodCalled },
+                });
                 return this.handleRestResponse(response, url, method, headers, body);
             }
-            else {
-                const response = await axios(axiosConfig);
-                return this.handleRestResponse(response, url, method, headers, body);
-            }
+            const response = await axios(axiosConfig);
+            return this.handleRestResponse(response, url, method, headers, body);
         }
         catch (error) {
             this.log({ error });

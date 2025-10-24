@@ -57,12 +57,8 @@ export default class Exchange {
     nodeHttpModuleLoaded: boolean;
     httpAgent: any;
     httpsAgent: any;
-    useVerity: boolean;
-    verityProverUrl: string;
-    verityMethods: string[];
-    verityRequestOptions: {
-        redact: string;
-    };
+    private httpClientOverride?;
+    private httpOverridePredicate?;
     minFundingAddressLength: Int;
     substituteCommonCurrencyCodes: boolean;
     quoteJsonNumbers: boolean;
@@ -126,7 +122,6 @@ export default class Exchange {
     last_request_body: any;
     last_request_url: any;
     last_request_path: any;
-    last_proof: string | undefined;
     id: string;
     markets: Dictionary<any>;
     has: Dictionary<boolean | 'emulated'>;
@@ -335,9 +330,7 @@ export default class Exchange {
     setProxyAgents(httpProxy: any, httpsProxy: any, socksProxy: any): any;
     loadHttpProxyAgent(): Promise<any>;
     getHttpAgentIfNeeded(url: any): any;
-    addVerityRequestOptions(options: {
-        redact: string;
-    }): void;
+    setHttpClientOverride(client: import('./overrides').HttpClientOverride, predicate?: import('./overrides').HttpOverridePredicate): void;
     fetch(url: any, method?: string, headers?: any, body?: any): Promise<any>;
     parseJson(jsonString: any): any;
     getResponseHeaders(response: any): {};

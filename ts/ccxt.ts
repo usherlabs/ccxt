@@ -40,7 +40,7 @@ import {BaseError, ExchangeError, AuthenticationError, PermissionDenied, Account
 //-----------------------------------------------------------------------------
 // this is updated by vss.js when building
 
-const version = '0.0.11';
+const version = '0.0.12';
 
 (Exchange as any).ccxtVersion = version
 
@@ -657,8 +657,10 @@ export {
     xt,
     yobit,
     zaif,
-    zonda,    
+    zonda,
 }
+
+export * from './src/base/overrides.js';
 
 export default ccxt;
 

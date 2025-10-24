@@ -2466,12 +2466,10 @@ export default class Exchange {
     httpAgent = undefined;
     httpsAgent = undefined;
 
-    // ! Usher Labs Addition
-    useVerity: boolean = false;
-    verityProverUrl = "http://localhost:8080";
-    verityMethods: string[] = ["fetchBalance", "fetchDepositAddress", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw", "fetchFundingHistory", "fetchWithdrawals", "fetchWithdrawal"];
-    verityRequestOptions: { redact: string } = { redact: "" };
-    //! ------------------------------
+    // ! --- Usher Labs HTTP override ---
+    private httpClientOverride?: import('./overrides').HttpClientOverride;
+    private httpOverridePredicate?: import('./overrides').HttpOverridePredicate;
+    // ! --------------------------------
 
     minFundingAddressLength: Int = 1 // used in checkAddress
     substituteCommonCurrencyCodes: boolean = true  // reserved
@@ -2547,8 +2545,6 @@ export default class Exchange {
     last_request_body = undefined
     last_request_url = undefined
     last_request_path = undefined
-    // ! Usher Labs Addition
-    last_proof: string | undefined = undefined
 
     id: string = 'Exchange';
 
@@ -2818,7 +2814,6 @@ export default class Exchange {
         this.last_request_body = undefined
         this.last_request_url = undefined
         this.last_request_path = undefined
-        this.last_proof = undefined
 
 
         // camelCase and snake_notation support
@@ -3065,11 +3060,15 @@ export default class Exchange {
     }
 
     // ! Usher Labs Addition
-    addVerityRequestOptions(options: { redact: string }) {
-        this.verityRequestOptions = options;
+    public setHttpClientOverride(
+        client: import('./overrides').HttpClientOverride,
+        predicate?: import('./overrides').HttpOverridePredicate,
+    ) {
+        this.httpClientOverride = client;
+        this.httpOverridePredicate = predicate;
     }
 
-    // ! Usher Labs Addition: Modified to use Verity if instantiated as such. Includes appended headers.
+    // ! Usher Labs Addition: Modified to use an Axios-like override HTTP client if instantiated.
     async fetch(url, method = 'GET', headers: any = undefined, body: any = undefined) {
 
         // load node-http(s) modules only on first call
@@ -3153,7 +3152,7 @@ export default class Exchange {
         }
 
         try {
-            this.last_proof = undefined;
+            //
 
             const path = url.split("?")[0];
             const idMap = urlToMethodMap[this.id] ?? {};
@@ -3167,21 +3166,24 @@ export default class Exchange {
                 this.log("MethodCalled:", methodCalled+ "\n");
             }
 
-            if (this.useVerity && ["get", "post"].includes(method.toLowerCase()) && this.verityMethods.includes(methodCalled)) {
-                const { default: verity } = await import(/* webpackIgnore: true */ '@usherlabs/verity-client');
-                const client = new verity.VerityClient({ prover_url: this.verityProverUrl });
-                const response = await client
-                    .get(axiosConfig.url, axiosConfig)
-                    .redact(this.verityRequestOptions.redact || ""); // ? Should Verity be configured for use on a per request basis always?
-                if (this.verbose) {
-                    this.log("verityProof:", response.proof, "\n\n", "verityNotaryPub:", response.notary_pub_key, "\n");
-                }
-                this.last_proof = response.proof
-                return this.handleRestResponse(response, url, method, headers, body);
-            } else {
-                const response = await axios(axiosConfig);
+
+            const shouldOverride = this.httpClientOverride && (this.httpOverridePredicate
+                ? this.httpOverridePredicate({ method, methodCalled, url })
+                : true);
+
+            if (this.httpClientOverride && shouldOverride) {
+                const response = await this.httpClientOverride({
+                    method,
+                    url: axiosConfig.url,
+                    config: axiosConfig,
+                    data: axiosConfig.data,
+                    meta: { methodCalled },
+                });
                 return this.handleRestResponse(response, url, method, headers, body);
             }
+
+            const response = await axios(axiosConfig);
+            return this.handleRestResponse(response, url, method, headers, body);
         } catch (error) {
             this.log({ error });
             if (axios.isAxiosError(error)) {
