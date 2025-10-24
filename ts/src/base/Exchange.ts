@@ -3153,7 +3153,7 @@ export default class Exchange {
         }
 
         try {
-            this.last_proof = undefined; // TODO: I wonder if there's a race condition on last_proof, where another request's proof is passed instead? We should test this.
+            this.last_proof = undefined;
 
             const path = url.split("?")[0];
             const idMap = urlToMethodMap[this.id] ?? {};
