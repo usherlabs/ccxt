@@ -1,7 +1,7 @@
 {
   "name": "@usherlabs/ccxt",
-  "version": "0.0.10",
-  "description": "A JavaScript cryptocurrency trading library with support for 100+ exchanges. Verifiable data powered by Verity.",
+  "version": "0.0.11",
+  "description": "A JavaScript cryptocurrency trading library with support for 100+ exchanges + optional Verity zkTLS proof of data source.",
   "unpkg": "dist/ccxt.browser.min.js",
   "type": "module",
   "access": "public",
@@ -10,7 +10,6 @@
       "import": "./js/ccxt.js",
       "require": "./dist/ccxt.cjs",
       "types": "./js/ccxt.d.ts"
-
     }
   },
   "engines": {
@@ -167,8 +166,15 @@
   },
   "ethereum": "0x26a3CB49578F07000575405a57888681249c35Fd",
   "dependencies": {
-    "@usherlabs/verity-client": "^0.0.24",
     "axios": "^1.10.0",
     "ws": "^8.8.1"
+  },
+  "peerDependencies": {
+    "@usherlabs/verity-client": "*"
+  },
+  "peerDependenciesMeta": {
+    "@usherlabs/verity-client": {
+      "optional": true
+    }
   }
 }

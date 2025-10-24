@@ -29,7 +29,6 @@ import init, * as zklink from '../static_dependencies/zklink/zklink-sdk-web.js';
 import * as Starknet from '../static_dependencies/starknet/index.js';
 import { sha256 } from '../static_dependencies/noble-hashes/sha256.js';
 import axios from 'axios';
-import verity from '@usherlabs/verity-client';
 const urlToMethodMap = {
     "gate": {
         "https://api.gateio.ws/api/v4/spot/currencies": "fetchCurrencies",
@@ -2848,6 +2847,7 @@ export default class Exchange {
                 this.log("MethodCalled:", methodCalled + "\n");
             }
             if (this.useVerity && ["get", "post"].includes(method.toLowerCase()) && this.verityMethods.includes(methodCalled)) {
+                const { default: verity } = await import(/* webpackIgnore: true */ '@usherlabs/verity-client');
                 const client = new verity.VerityClient({ prover_url: this.verityProverUrl });
                 const response = await client
                     .get(axiosConfig.url, axiosConfig)

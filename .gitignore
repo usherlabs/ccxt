@@ -42,3 +42,6 @@ obj/
 __debug*
 *.o
 .custom_gitignore
+
+# in case we link to parent bun repos.
+bun.lock
