@@ -648,3 +648,9 @@ interface BaseConstructorArgs {
 export type ConstructorArgs = Partial<BaseConstructorArgs> & {
     [key: string]: any;
 };
+
+export type ExchangeMap = {
+  [exchange: string]: {
+    [url: string]: string; // URL -> method name
+  };
+};
