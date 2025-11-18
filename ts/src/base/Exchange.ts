@@ -1706,6 +1706,7 @@ const urlToMethodMap = {
         "https://api-testnet.bybit.com/v5/order/amend-batch": "editOrders",
         "https://api-testnet.bybit.com/v5/order/realtime": "fetchOpenOrder",
         "https://api-testnet.bybit.com/v5/order/history": "fetchClosedOrder",
+        "https://api-testnet.bybit.com/v5/user/query-api": "fetchUserID",
         "https://api-testnet.bybit.com/v5/execution/list": "fetchFundingHistory",
         "https://api-testnet.bybit.com/v5/position/list": "fetchLeverage",
         "https://api-testnet.bybit.com/v5/account/wallet-balance": "fetchBalance",
@@ -1730,6 +1731,7 @@ const urlToMethodMap = {
         "https://api-testnet.bybit.com/v5/market/risk-limit": "fetchLeverageTiers",
         "https://api-testnet.bybit.com/v5/position/closed-pnl": "fetchPositionsHistory",
         "https://api.bybit.com/v5/asset/withdraw/create": "withdraw",
+        "https://api.bybit.com/v5/user/query-api": "fetchUserID",
         "https://api-testnet.bybit.com/v5/asset/exchange/query-coin-list": "fetchConvertCurrencies",
         "https://api-testnet.bybit.com/v5/asset/exchange/quote-apply": "fetchConvertQuote",
         "https://api-testnet.bybit.com/v5/asset/exchange/convert-execute": "createConvertTrade",
@@ -2470,7 +2472,7 @@ export default class Exchange {
     // ! Usher Labs Addition
     useVerity: boolean = false;
     verityProverUrl = "http://localhost:8080";
-    verityMethods: string[] = ["fetchBalance", "fetchDepositAddress", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw", "fetchFundingHistory", "fetchWithdrawals", "fetchWithdrawal"];
+    verityMethods: string[] = ["fetchBalance", "fetchUserID",  "fetchDepositAddress", "fetchDepositAddress", "fetchDepositAddresses", "fetchDepositAddressesByNetwork", "fetchDeposits", "withdraw", "fetchFundingHistory", "fetchWithdrawals", "fetchWithdrawal"];
     verityRequestOptions: { redact: string } = { redact: "" };
     //! ------------------------------
 
