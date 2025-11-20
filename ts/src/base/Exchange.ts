@@ -600,6 +600,7 @@ export default class Exchange {
             "https://contract.mexc.com/api/v1/contract/funding_rate/": "fetchFundingInterval",
             "https://contract.mexc.com/api/v1/private/position/list/history_positions": "fetchPositionsHistory",
             "https://api.mexc.com/api/v3/capital/withdraw": "withdraw",
+            "https://api.mexc.com/api/v3/uid": "fetchAccountId",
             "https://contract.mexc.com/api/v1/private/position/change_leverage": "setMarginMode"
         },
         "onetrading": {
