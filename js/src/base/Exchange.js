@@ -1189,6 +1189,7 @@ export default class Exchange {
                 "https://testnet.binancefuture.com/sapi/v1/lending/union/account": "fetchBalance",
                 "https://testnet.binancefuture.com/sapi/v1/asset/get-funding-asset": "fetchBalance",
                 "https://api.binance.com/sapi/v1/margin/isolated/account": "fetchBalance",
+                "https://api.binance.com/api/v5/user/query-api": "fetchAccountId",
                 "https://papi.binance.com/papi/v1/balance": "fetchBalance",
                 "https://api.binance.com/api/v3/myTrades": "fetchOrderTrades",
                 "https://testnet.binancefuture.com/fapi/v1/userTrades": "fetchMyTrades",
@@ -1616,8 +1617,8 @@ export default class Exchange {
                 "https://api-testnet.bybit.com/v5/market/open-interest": "fetchOpenInterest",
                 "https://api-testnet.bybit.com/v5/asset/deposit/query-address": "fetchDepositAddressesByNetwork",
                 "https://api.bybit.com/v5/asset/deposit/query-address": "fetchDepositAddressesByNetwork",
-                "https://api.bybit.com/v5/user/query-api": "fetchUserID",
-                "https:/ /api.com/v5/user/query-api": "fetchUserID",
+                "https://api.bybit.com/v5/user/query-api": "fetchAccountId",
+                "https://api-testnet.bybit.com/v5/user/query-api": "fetchAccountId",
             },
             "cryptomus": {
                 "https://api.cryptomus.com/v2/user-api/exchange/account/tariffs": "fetchTradingFees",
@@ -2793,6 +2794,7 @@ export default class Exchange {
     }
     // ! Usher Labs Addition: Modified to use an Axios-like override HTTP client if instantiated.
     async fetch(url, method = 'GET', headers = undefined, body = undefined) {
+        console.log({ url, method, headers, body });
         // load node-http(s) modules only on first call
         if (isNode) {
             if (!this.nodeHttpModuleLoaded) {
