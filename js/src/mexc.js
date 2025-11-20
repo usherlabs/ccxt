@@ -196,6 +196,7 @@ export default class mexc extends Exchange {
                             'account': 10,
                             'myTrades': 10,
                             'tradeFee': 10,
+                            'uid': 1,
                             'sub-account/list': 1,
                             'sub-account/apiKey': 1,
                             'capital/config/getall': 10,
