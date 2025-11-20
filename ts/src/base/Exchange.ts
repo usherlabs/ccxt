@@ -3119,7 +3119,6 @@ export default class Exchange {
     // ! Usher Labs Addition: Modified to use an Axios-like override HTTP client if instantiated.
     async fetch(url, method = 'GET', headers: any = undefined, body: any = undefined) {
 
-        console.log({url, method, headers, body});
         // load node-http(s) modules only on first call
         if (isNode) {
             if (!this.nodeHttpModuleLoaded) {
