@@ -545,6 +545,7 @@ const urlToMethodMap = {
         "https://contract.mexc.com/api/v1/contract/funding_rate/": "fetchFundingInterval",
         "https://contract.mexc.com/api/v1/private/position/list/history_positions": "fetchPositionsHistory",
         "https://api.mexc.com/api/v3/capital/withdraw": "withdraw",
+        "https://api.mexc.com/api/v3/uid": "fetchAccountId",
         "https://contract.mexc.com/api/v1/private/position/change_leverage": "setMarginMode"
     },
     "onetrading": {
@@ -1312,6 +1313,7 @@ const urlToMethodMap = {
         "https://testnet.binancefuture.com/sapi/v1/lending/union/account": "fetchBalance",
         "https://testnet.binancefuture.com/sapi/v1/asset/get-funding-asset": "fetchBalance",
         "https://api.binance.com/sapi/v1/margin/isolated/account": "fetchBalance",
+        "https://api.binance.com/api/v5/user/query-api": "fetchAccountId",
         "https://papi.binance.com/papi/v1/balance": "fetchBalance",
         "https://api.binance.com/api/v3/myTrades": "fetchOrderTrades",
         "https://testnet.binancefuture.com/fapi/v1/userTrades": "fetchMyTrades",
@@ -1739,7 +1741,8 @@ const urlToMethodMap = {
         "https://api-testnet.bybit.com/v5/market/open-interest": "fetchOpenInterest",
         "https://api-testnet.bybit.com/v5/asset/deposit/query-address": "fetchDepositAddressesByNetwork",
         "https://api.bybit.com/v5/asset/deposit/query-address": "fetchDepositAddressesByNetwork",
-
+        "https://api.bybit.com/v5/user/query-api": "fetchAccountId",
+        "https://api-testnet.bybit.com/v5/user/query-api": "fetchAccountId",
     },
     "cryptomus": {
         "https://api.cryptomus.com/v2/user-api/exchange/account/tariffs": "fetchTradingFees",
@@ -3157,13 +3160,13 @@ export default class Exchange {
             const path = url.split("?")[0];
             const idMap = urlToMethodMap[this.id] ?? {};
 
-            const matchedEntry:any = Object.entries(idMap).find(([prefix]) =>
-            path.startsWith(prefix)
+            const matchedEntry: any = Object.entries(idMap).find(([prefix]) =>
+                path.startsWith(prefix)
             );
 
-            const methodCalled:string = matchedEntry?.[1] ?? "";
+            const methodCalled: string = matchedEntry?.[1] ?? "";
             if (this.verbose) {
-                this.log("MethodCalled:", methodCalled+ "\n");
+                this.log("MethodCalled:", methodCalled + "\n");
             }
 
 
