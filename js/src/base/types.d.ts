@@ -582,9 +582,4 @@ interface BaseConstructorArgs {
 export declare type ConstructorArgs = Partial<BaseConstructorArgs> & {
     [key: string]: any;
 };
-export declare type ExchangeMap = {
-    [exchange: string]: {
-        [url: string]: string;
-    };
-};
 export {};
