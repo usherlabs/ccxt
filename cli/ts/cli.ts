@@ -15,7 +15,7 @@ let ccxt;
 let local = false;
 try {
     // @ts-ignore
-    ccxt = await import ('ccxt');
+    ccxt = await import ('@usherlabs/ccxt');
 } catch (e) {
     try {
         // @ts-ignore
@@ -73,6 +73,7 @@ interface CLIOptions {
     param?: any;
     config?: any;
     clipboard?: boolean;
+    history?: boolean;
 }
 
 const exchanges = Object.keys (ccxt.exchanges) as string[];
