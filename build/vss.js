@@ -52,11 +52,11 @@ async function vssEverything () {
     vss ('./dist/ccxt.browser.min.js',                   "const ps=\"{version}\"",                                 version)
     vss ('./dist/cjs/ccxt.js',                           "const version = '{version}'",                            version)
 
-    vss ('./go/v4/exchange_metadata.go',                 "var Version string = \"{version}\"",                  version)
+    // vss ('./go/v4/exchange_metadata.go',                 "var Version string = \"{version}\"",                  version)
     // vss ('./python/ccxt/pro/base/exchange.py',           "__version__ = '{version}'",   version)
 
     vss ('./README.md',       "ccxt@{version}", version, true)
-    vss ('./wiki/Install.md', "ccxt@{version}", version, true)
+    // vss ('./wiki/Install.md', "ccxt@{version}", version, true)
 
 
 
