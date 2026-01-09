@@ -2789,6 +2789,57 @@ export default class binance extends Exchange {
 
     /**
      * @method
+     * @name binance#fetchAccountId
+     * @description fetches the account id from the exchange server
+     * @see https://developers.binance.com/docs/wallet/capital/all-coins-info
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {string} the account id
+     */
+    async fetchAccountId (params = {}): Promise<string> {
+        const response = await this.privateGetAccount (params);
+        //
+        // {
+        //     "makerCommission": 15,
+        //     "takerCommission": 15,
+        //     "buyerCommission": 0,
+        //     "sellerCommission": 0,
+        //     "commissionRates": {
+        //       "maker": "0.00150000",
+        //       "taker": "0.00150000",
+        //       "buyer": "0.00000000",
+        //       "seller": "0.00000000"
+        //     },
+        //     "canTrade": true,
+        //     "canWithdraw": true,
+        //     "canDeposit": true,
+        //     "brokered": false,
+        //     "requireSelfTradePrevention": false,
+        //     "preventSor": false,
+        //     "updateTime": 123456789,
+        //     "accountType": "SPOT",
+        //     "balances": [
+        //       {
+        //         "asset": "BTC",
+        //         "free": "4723846.89208129",
+        //         "locked": "0.00000000"
+        //       },
+        //       {
+        //         "asset": "LTC",
+        //         "free": "4763368.68006011",
+        //         "locked": "0.00000000"
+        //       }
+        //     ],
+        //     "permissions": [
+        //       "SPOT"
+        //     ],
+        //     "uid": 354937868
+        // }
+        //
+        return this.safeString (response, 'uid');
+    }
+
+    /**
+     * @method
      * @name binance#fetchCurrencies
      * @description fetches all available currencies on an exchange
      * @see https://developers.binance.com/docs/wallet/capital/all-coins-info

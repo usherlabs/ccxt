@@ -58,7 +58,7 @@ function getPreamble () {
 
 //-------------------------------------------------------------------------
 
-function generateImplicitMethodNames(id, api, paths = []){
+function generateImplicitMethodNames(id: string, api: string, paths: string[] = []){
     const keys = Object.keys(api);
     for (const key of keys){
         let value = api[key];
@@ -86,7 +86,7 @@ function generateImplicitMethodNames(id, api, paths = []){
                 storedCamelCaseMethods[id].push (camelCasePath)
                 let underscorePath = result.map (x => x.toLowerCase ()).join ('_')
                 storedUnderscoreMethods[id].push (underscorePath)
-                let config: {} = undefined
+                let config: {} | undefined = undefined
                 if (Array.isArray (value)) {
                     config = {}
                 } else {
@@ -278,11 +278,11 @@ async function main() {
 
 
 
-    if (shouldGenerateAll || langKeys['--go']) {
-        createImplicitMethodsGo()
-        await editAPIFilesGo()
-        log.bright.cyan ('GO implicit api methods completed!')
-    }
+    // if (shouldGenerateAll || langKeys['--go']) {
+    //     createImplicitMethodsGo()
+    //     await editAPIFilesGo()
+    //     log.bright.cyan ('GO implicit api methods completed!')
+    // }
 
     // await unlinkFiles (JS_PATH, '.js')
     // await unlinkFiles (JS_PATH, '.d.ts')

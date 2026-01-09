@@ -11,15 +11,15 @@ ansi.nice;
 const log = ololog.configure ({ 'locate': false }).unlimited;
 let add_static_result;
 
-try {
-    add_static_result = (await import ('../../utils/update-static-tests-data.js')).add_static_result;
-} catch (e) {
-    // noop
-}
+// try {
+//     add_static_result = (await import ('../../utils/update-static-tests-data.js')).add_static_result;
+// } catch (e) {
+//     // noop
+// }
 let ccxt;
 try {
     // @ts-ignore
-    ccxt = await import ('ccxt');
+    ccxt = await import ('@usherlabs/ccxt');
 } catch (e) {
     try {
         // @ts-ignore
@@ -184,7 +184,7 @@ function createResponseTemplate (cliOptions, exchange, methodName, args, result)
  *
  */
 function printSupportedExchanges () {
-    log ('Supported exchanges:', (ccxt.exchanges.join (', ') as any).green);
+    log ('Supported exchanges:', (Object.keys(ccxt.exchanges).join (', ') as any).green);
 }
 
 //-----------------------------------------------------------------------------

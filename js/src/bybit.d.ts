@@ -45,6 +45,15 @@ export default class bybit extends Exchange {
     fetchTime(params?: {}): Promise<Int>;
     /**
      * @method
+     * @name bybit#fetchAccountId
+     * @description fetches the account id from the exchange server
+     * @see https://bybit-exchange.github.io/docs/v5/user/query-api
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {string} the current integer timestamp in milliseconds from the exchange server
+     */
+    fetchAccountId(params?: {}): Promise<string>;
+    /**
+     * @method
      * @name bybit#fetchCurrencies
      * @description fetches all available currencies on an exchange
      * @see https://bybit-exchange.github.io/docs/v5/asset/coin-info

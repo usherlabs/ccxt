@@ -1034,6 +1034,22 @@ export default class mexc extends Exchange {
 
     /**
      * @method
+     * @name mexc#fetchAccountId
+     * @description fetches the account id from the exchange server
+     * @see https://www.mexc.com/api-docs/spot-v3/spot-account-trade#query-uid
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {string} the account id
+     */
+    async fetchAccountId (params = {}): Promise<string> {
+        const response = await this.spotPrivateGetUid (params);
+        //
+        //     { "uid":"209302839" }
+        //
+        return this.safeString (response, 'uid');
+    }
+
+    /**
+     * @method
      * @name mexc#fetchCurrencies
      * @description fetches all available currencies on an exchange
      * @see https://mexcdevelop.github.io/apidocs/spot_v3_en/#query-the-currency-information

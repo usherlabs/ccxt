@@ -466,6 +466,7 @@ export default class Exchange {
     watchOrderBook(symbol: string, limit?: Int, params?: {}): Promise<OrderBook>;
     unWatchOrderBook(symbol: string, params?: {}): Promise<any>;
     fetchTime(params?: {}): Promise<Int>;
+    fetchAccountId(): Promise<string>;
     fetchTradingLimits(symbols?: Strings, params?: {}): Promise<{}>;
     parseCurrency(rawCurrency: Dict): Currency;
     parseCurrencies(rawCurrencies: any): Currencies;
