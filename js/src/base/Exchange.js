@@ -4403,6 +4403,9 @@ export default class Exchange {
     async fetchTime(params = {}) {
         throw new NotSupported(this.id + ' fetchTime() is not supported yet');
     }
+    async fetchAccountId() {
+        throw new NotSupported(this.id + ' fetchAccountId () is not supported yet');
+    }
     async fetchTradingLimits(symbols = undefined, params = {}) {
         throw new NotSupported(this.id + ' fetchTradingLimits() is not supported yet');
     }

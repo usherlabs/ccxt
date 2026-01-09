@@ -29,6 +29,15 @@ export default class binance extends Exchange {
     fetchTime(params?: {}): Promise<Int>;
     /**
      * @method
+     * @name binance#fetchAccountId
+     * @description fetches the account id from the exchange server
+     * @see https://developers.binance.com/docs/wallet/capital/all-coins-info
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {string} the account id
+     */
+    fetchAccountId(params?: {}): Promise<string>;
+    /**
+     * @method
      * @name binance#fetchCurrencies
      * @description fetches all available currencies on an exchange
      * @see https://developers.binance.com/docs/wallet/capital/all-coins-info

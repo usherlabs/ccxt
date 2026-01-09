@@ -1598,6 +1598,60 @@ export default class bybit extends Exchange {
 
     /**
      * @method
+     * @name bybit#fetchAccountId
+     * @description fetches the account id from the exchange server
+     * @see https://bybit-exchange.github.io/docs/v5/user/query-api
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {string} the current integer timestamp in milliseconds from the exchange server
+     */
+    async fetchAccountId (params = {}): Promise<string> {
+        const response = await this.privateGetV5UserQueryApi (params);
+        //
+        //    {
+        //         "retCode": "0",
+        //         "retMsg": "OK",
+        //         "result": {
+        //             "id": "13770661",
+        //             "note": "XXXXXX",
+        //             "apiKey": "XXXXXX",
+        //             "readOnly": 0,
+        //             "secret": "",
+        //             "permissions": {
+        //                 "ContractTrade": [...],
+        //                 "Spot": [...],
+        //                 "Wallet": [...],
+        //                 "Options": [...],
+        //                 "Derivatives": [...],
+        //                 "CopyTrading": [...],
+        //                 "BlockTrade": [...],
+        //                 "Exchange": [...],
+        //                 "NFT": [...],
+        //             },
+        //             "ips": [...],
+        //             "type": 1,
+        //             "deadlineDay": 83,
+        //             "expiredAt": "2023-05-15T03:21:05Z",
+        //             "createdAt": "2022-10-16T02:24:40Z",
+        //             "unified": 0,
+        //             "uta": 0,
+        //             "userID": 24600000,
+        //             "inviterID": 0,
+        //             "vipLevel": "No VIP",
+        //             "mktMakerLevel": "0",
+        //             "affiliateID": 0,
+        //             "rsaPublicKey": "",
+        //             "isMaster": false
+        //         },
+        //         "retExtInfo": {},
+        //         "time": "1666879482792"
+        //     }
+        //
+        const result = this.safeDict (response, 'result', {});
+        return this.safeString (result, 'userID');
+    }
+
+    /**
+     * @method
      * @name bybit#fetchCurrencies
      * @description fetches all available currencies on an exchange
      * @see https://bybit-exchange.github.io/docs/v5/asset/coin-info
