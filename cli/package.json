@@ -21,7 +21,7 @@
     "trading"
   ],
   "dependencies": {
-    "@usherlabs/ccxt": "^0.0.13",
+    "@usherlabs/ccxt": "^0.0.14",
     "ansicolor": "^2.0.3",
     "as-table": "^1.0.55",
     "blessed": "^0.1.81",
