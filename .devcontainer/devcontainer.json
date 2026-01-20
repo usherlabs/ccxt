@@ -6,5 +6,6 @@
 	"mounts": [
 		// Mount the SSH key for the local machine to make git fetch/push work in the container	
 		"source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,type=bind,consistency=cached,readonly"
-	]
+	],
+	"postCreateCommand": "echo \"node: $(node --version)\" && echo \"npm: $(npm --version)\" && echo \"pnpm: $(pnpm --version)\""
 }
