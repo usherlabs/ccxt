@@ -1,0 +1,16 @@
+services:
+  ccxt:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: ccxt-dev
+    volumes:
+      - ../:/home/node/ccxt:cached
+    command: sleep infinity
+    networks:
+      - fiet-sandbox
+
+networks:
+  fiet-sandbox:
+    external: true
+    name: fiet-sandbox
