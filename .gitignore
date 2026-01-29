@@ -45,3 +45,6 @@ __debug*
 
 # in case we link to parent bun repos.
 bun.lock
+
+.pnpm-store/
+cli/js/
