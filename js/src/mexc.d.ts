@@ -1,5 +1,5 @@
 import Exchange from './abstract/mexc.js';
-import type { TransferEntry, IndexType, Int, OrderSide, Balances, OrderType, OHLCV, FundingRateHistory, Position, OrderBook, OrderRequest, FundingHistory, Order, Str, Trade, Transaction, Ticker, Tickers, Strings, Market, Currency, Leverage, Num, Account, MarginModification, Currencies, Dict, LeverageTier, LeverageTiers, int, FundingRate, DepositAddress, TradingFeeInterface } from './base/types.js';
+import type { TransferEntry, IndexType, Int, OrderSide, Balances, OrderType, OHLCV, FundingRateHistory, Position, OrderBook, OrderRequest, FundingHistory, Order, Str, Trade, Transaction, Ticker, Tickers, Strings, Market, Currency, Leverage, Num, Account, MarginModification, Currencies, Dict, LeverageTier, LeverageTiers, int, FundingRate, DepositAddress, TradingFeeInterface, LedgerEntry } from './base/types.js';
 /**
  * @class mexc
  * @augments Exchange
@@ -641,6 +641,22 @@ export default class mexc extends Exchange {
      * @returns {object[]} a list of [transfer structures]{@link https://docs.ccxt.com/#/?id=transfer-structure}
      */
     fetchTransfers(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<TransferEntry[]>;
+    /**
+     * @method
+     * @name mexc#fetchLedger
+     * @description fetch account-movement history as a unified ledger by composing MEXC deposits, withdrawals, and internal transfers
+     * @param {string} [code] unified currency code of the ledger entries, default is undefined
+     * @param {int} [since] timestamp in ms of the earliest ledger entry, default is undefined
+     * @param {int} [limit] max number of ledger entries to return, default is undefined
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {boolean} [params.includeDeposits] default true
+     * @param {boolean} [params.includeWithdrawals] default true
+     * @param {boolean} [params.includeTransfers] default true
+     * @returns {object[]} a list of [ledger structures]{@link https://docs.ccxt.com/#/?id=ledger}
+     */
+    fetchLedger(code?: Str, since?: Int, limit?: Int, params?: {}): Promise<LedgerEntry[]>;
+    transactionToLedgerEntry(transaction: Transaction): LedgerEntry;
+    transferToLedgerEntry(transfer: TransferEntry): LedgerEntry;
     /**
      * @method
      * @name mexc#transfer

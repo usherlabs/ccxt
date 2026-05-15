@@ -6,7 +6,7 @@ import { BadRequest, InvalidNonce, BadSymbol, InvalidOrder, InvalidAddress, Exch
 import { TICK_SIZE } from './base/functions/number.js';
 import { Precise } from './base/Precise.js';
 import { sha256 } from './static_dependencies/noble-hashes/sha256.js';
-import type { TransferEntry, IndexType, Int, OrderSide, Balances, OrderType, OHLCV, FundingRateHistory, Position, OrderBook, OrderRequest, FundingHistory, Order, Str, Trade, Transaction, Ticker, Tickers, Strings, Market, Currency, Leverage, Num, Account, MarginModification, Currencies, Dict, LeverageTier, LeverageTiers, int, FundingRate, DepositAddress, TradingFeeInterface } from './base/types.js';
+import type { TransferEntry, IndexType, Int, OrderSide, Balances, OrderType, OHLCV, FundingRateHistory, Position, OrderBook, OrderRequest, FundingHistory, Order, Str, Trade, Transaction, Ticker, Tickers, Strings, Market, Currency, Leverage, Num, Account, MarginModification, Currencies, Dict, LeverageTier, LeverageTiers, int, FundingRate, DepositAddress, TradingFeeInterface, LedgerEntry } from './base/types.js';
 
 // ---------------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ export default class mexc extends Exchange {
                 'fetchIsolatedBorrowRates': false,
                 'fetchIsolatedPositions': false,
                 'fetchL2OrderBook': true,
-                'fetchLedger': undefined,
+                'fetchLedger': 'emulated',
                 'fetchLedgerEntry': undefined,
                 'fetchLeverage': true,
                 'fetchLeverages': false,
@@ -5385,6 +5385,94 @@ export default class mexc extends Exchange {
             //
         }
         return this.parseTransfers (resultList, currency, since, limit);
+    }
+
+    /**
+     * @method
+     * @name mexc#fetchLedger
+     * @description fetch account-movement history as a unified ledger by composing MEXC deposits, withdrawals, and internal transfers
+     * @param {string} [code] unified currency code of the ledger entries, default is undefined
+     * @param {int} [since] timestamp in ms of the earliest ledger entry, default is undefined
+     * @param {int} [limit] max number of ledger entries to return, default is undefined
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {boolean} [params.includeDeposits] default true
+     * @param {boolean} [params.includeWithdrawals] default true
+     * @param {boolean} [params.includeTransfers] default true
+     * @returns {object[]} a list of [ledger structures]{@link https://docs.ccxt.com/#/?id=ledger}
+     */
+    async fetchLedger (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<LedgerEntry[]> {
+        await this.loadMarkets ();
+        const includeDeposits = this.safeBool (params, 'includeDeposits', true);
+        const includeWithdrawals = this.safeBool (params, 'includeWithdrawals', true);
+        const includeTransfers = this.safeBool (params, 'includeTransfers', true);
+        params = this.omit (params, [ 'includeDeposits', 'includeWithdrawals', 'includeTransfers' ]);
+        const ledgerEntries: LedgerEntry[] = [];
+        if (includeDeposits) {
+            const deposits = await this.fetchDeposits (code, since, limit, this.extend ({}, params));
+            for (let i = 0; i < deposits.length; i++) {
+                ledgerEntries.push (this.transactionToLedgerEntry (deposits[i]));
+            }
+        }
+        if (includeWithdrawals) {
+            const withdrawals = await this.fetchWithdrawals (code, since, limit, this.extend ({}, params));
+            for (let i = 0; i < withdrawals.length; i++) {
+                ledgerEntries.push (this.transactionToLedgerEntry (withdrawals[i]));
+            }
+        }
+        if (includeTransfers) {
+            const transfers = await this.fetchTransfers (code, since, limit, this.extend ({}, params));
+            for (let i = 0; i < transfers.length; i++) {
+                ledgerEntries.push (this.transferToLedgerEntry (transfers[i]));
+            }
+        }
+        const uniqueEntries = this.removeRepeatedElementsFromArray (ledgerEntries);
+        const sortedEntries = this.sortBy (uniqueEntries, 'timestamp');
+        return this.filterBySinceLimit (sortedEntries, since, limit);
+    }
+
+    transactionToLedgerEntry (transaction: Transaction): LedgerEntry {
+        const type = this.safeString (transaction, 'type');
+        const currencyCode = this.safeString (transaction, 'currency');
+        const direction = (type === 'withdrawal') ? 'out' : 'in';
+        return this.safeLedgerEntry ({
+            'info': transaction['info'],
+            'id': this.safeString (transaction, 'id'),
+            'timestamp': this.safeInteger (transaction, 'timestamp'),
+            'datetime': this.safeString (transaction, 'datetime'),
+            'direction': direction,
+            'account': undefined,
+            'referenceId': this.safeString (transaction, 'txid'),
+            'referenceAccount': undefined,
+            'type': type,
+            'currency': currencyCode,
+            'amount': this.safeNumber (transaction, 'amount'),
+            'before': undefined,
+            'after': undefined,
+            'status': this.safeString (transaction, 'status'),
+            'fee': this.safeValue (transaction, 'fee'),
+        }) as LedgerEntry;
+    }
+
+    transferToLedgerEntry (transfer: TransferEntry): LedgerEntry {
+        const fromAccount = this.safeString (transfer, 'fromAccount');
+        const toAccount = this.safeString (transfer, 'toAccount');
+        return this.safeLedgerEntry ({
+            'info': transfer['info'],
+            'id': this.safeString (transfer, 'id'),
+            'timestamp': this.safeInteger (transfer, 'timestamp'),
+            'datetime': this.safeString (transfer, 'datetime'),
+            'direction': undefined,
+            'account': fromAccount,
+            'referenceId': this.safeString (transfer, 'id'),
+            'referenceAccount': toAccount,
+            'type': 'transfer',
+            'currency': this.safeString (transfer, 'currency'),
+            'amount': this.safeNumber (transfer, 'amount'),
+            'before': undefined,
+            'after': undefined,
+            'status': this.safeString (transfer, 'status'),
+            'fee': undefined,
+        }) as LedgerEntry;
     }
 
     /**

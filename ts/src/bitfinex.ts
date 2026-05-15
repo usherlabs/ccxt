@@ -63,6 +63,7 @@ export default class bitfinex extends Exchange {
                 'fetchDepositAddress': true,
                 'fetchDepositAddresses': false,
                 'fetchDepositAddressesByNetwork': false,
+                'fetchDeposits': true,
                 'fetchDepositsWithdrawals': true,
                 'fetchFundingHistory': false,
                 'fetchFundingRate': 'emulated', // emulated in exchange
@@ -89,6 +90,7 @@ export default class bitfinex extends Exchange {
                 'fetchOrderBook': true,
                 'fetchOrderBooks': false,
                 'fetchOrderTrades': true,
+                'fetchOrders': true,
                 'fetchPosition': false,
                 'fetchPositionMode': false,
                 'fetchPositions': true,
@@ -100,6 +102,7 @@ export default class bitfinex extends Exchange {
                 'fetchTradingFees': true,
                 'fetchTransactionFees': undefined,
                 'fetchTransactions': 'emulated',
+                'fetchTransfers': 'emulated',
                 'reduceMargin': false,
                 'repayCrossMargin': false,
                 'repayIsolatedMargin': false,
@@ -109,6 +112,7 @@ export default class bitfinex extends Exchange {
                 'setPositionMode': false,
                 'signIn': false,
                 'transfer': true,
+                'fetchWithdrawals': true,
                 'withdraw': true,
             },
             'timeframes': {
@@ -1053,6 +1057,26 @@ export default class bitfinex extends Exchange {
         return this.parseTransfer ({ 'result': response }, currency);
     }
 
+    /**
+     * @method
+     * @name bitfinex#fetchTransfers
+     * @description fetch internal transfers as unified transfer structures from ledger entries
+     * @param {string} [code] unified currency code, default is undefined
+     * @param {int} [since] timestamp in ms of the earliest transfer, default is undefined
+     * @param {int} [limit] max number of transfers to return, default is undefined
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [transfer structures]{@link https://docs.ccxt.com/#/?id=transfer-structure}
+     */
+    async fetchTransfers (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<TransferEntry[]> {
+        const ledger = await this.fetchLedger (code, since, limit, params);
+        const transfers = ledger.filter ((entry) => entry['type'] === 'transfer');
+        const result = [];
+        for (let i = 0; i < transfers.length; i++) {
+            result.push (this.ledgerEntryToTransfer (transfers[i]));
+        }
+        return this.filterBySinceLimit (result, since, limit);
+    }
+
     parseTransfer (transfer: Dict, currency: Currency = undefined): TransferEntry {
         //
         // transfer
@@ -1094,6 +1118,20 @@ export default class bitfinex extends Exchange {
             'fromAccount': fromAccount,
             'toAccount': toAccount,
             'info': result,
+        };
+    }
+
+    ledgerEntryToTransfer (entry: LedgerEntry): TransferEntry {
+        return {
+            'id': this.safeString (entry, 'id'),
+            'timestamp': this.safeInteger (entry, 'timestamp'),
+            'datetime': this.safeString (entry, 'datetime'),
+            'status': this.safeString (entry, 'status'),
+            'amount': this.safeNumber (entry, 'amount'),
+            'currency': this.safeString (entry, 'currency'),
+            'fromAccount': this.safeString (entry, 'account'),
+            'toAccount': this.safeString (entry, 'referenceAccount'),
+            'info': entry['info'],
         };
     }
 
@@ -2270,6 +2308,26 @@ export default class bitfinex extends Exchange {
 
     /**
      * @method
+     * @name bitfinex#fetchOrders
+     * @description fetches information on multiple orders made by the user
+     * @see https://docs.bitfinex.com/reference/rest-auth-retrieve-orders
+     * @see https://docs.bitfinex.com/reference/rest-auth-orders-history
+     * @param {string} symbol unified market symbol of the market orders were made in
+     * @param {int} [since] the earliest time in ms to fetch orders for
+     * @param {int} [limit] the maximum number of order structures to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async fetchOrders (symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Order[]> {
+        const openOrders = await this.fetchOpenOrders (symbol, since, limit, this.extend ({}, params));
+        const closedOrders = await this.fetchClosedOrders (symbol, since, limit, this.extend ({}, params));
+        const uniqueOrders = this.removeRepeatedElementsFromArray (openOrders.concat (closedOrders), false);
+        const sortedOrders = this.sortBy (uniqueOrders, 'timestamp');
+        return this.filterBySinceLimit (sortedOrders, since, limit);
+    }
+
+    /**
+     * @method
      * @name bitfinex#fetchOrderTrades
      * @description fetch all the trades made from a single order
      * @see https://docs.bitfinex.com/reference/rest-auth-order-trades
@@ -2747,6 +2805,40 @@ export default class bitfinex extends Exchange {
         //     ]
         //
         return this.parseTransactions (response, currency, since, limit);
+    }
+
+    /**
+     * @method
+     * @name bitfinex#fetchDeposits
+     * @description fetch all deposits made to an account
+     * @see https://docs.bitfinex.com/reference/rest-auth-movements
+     * @param {string} [code] unified currency code, default is undefined
+     * @param {int} [since] timestamp in ms of the earliest deposit, default is undefined
+     * @param {int} [limit] max number of deposits to return, default is undefined
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [transaction structures]{@link https://docs.ccxt.com/#/?id=transaction-structure}
+     */
+    async fetchDeposits (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Transaction[]> {
+        const transactions = await this.fetchDepositsWithdrawals (code, since, limit, params);
+        const deposits = transactions.filter ((transaction) => transaction['type'] === 'deposit');
+        return this.filterBySinceLimit (deposits, since, limit);
+    }
+
+    /**
+     * @method
+     * @name bitfinex#fetchWithdrawals
+     * @description fetch all withdrawals made from an account
+     * @see https://docs.bitfinex.com/reference/rest-auth-movements
+     * @param {string} [code] unified currency code, default is undefined
+     * @param {int} [since] timestamp in ms of the earliest withdrawal, default is undefined
+     * @param {int} [limit] max number of withdrawals to return, default is undefined
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object[]} a list of [transaction structures]{@link https://docs.ccxt.com/#/?id=transaction-structure}
+     */
+    async fetchWithdrawals (code: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Transaction[]> {
+        const transactions = await this.fetchDepositsWithdrawals (code, since, limit, params);
+        const withdrawals = transactions.filter ((transaction) => transaction['type'] === 'withdrawal');
+        return this.filterBySinceLimit (withdrawals, since, limit);
     }
 
     /**
