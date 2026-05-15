@@ -112,7 +112,7 @@ export default class bybit extends Exchange {
                 'fetchOptionChain': true,
                 'fetchOrder': true,
                 'fetchOrderBook': true,
-                'fetchOrders': false,
+                'fetchOrders': true,
                 'fetchOrderTrades': true,
                 'fetchPosition': true,
                 'fetchPositionHistory': 'emulated',
@@ -5019,7 +5019,11 @@ export default class bybit extends Exchange {
          */
         const enableUnifiedAccount = this.safeBool (res, 1);
         if (enableUnifiedAccount) {
-            throw new NotSupported (this.id + ' fetchOrders() is not supported after the 5/02 update for UTA accounts, please use fetchOpenOrders, fetchClosedOrders or fetchCanceledOrders');
+            const openOrders = await this.fetchOpenOrders (symbol, since, limit, this.extend ({}, params));
+            const historicalOrders = await this.fetchCanceledAndClosedOrders (symbol, since, limit, this.extend ({}, params));
+            const uniqueOrders = this.removeRepeatedElementsFromArray (openOrders.concat (historicalOrders), false);
+            const sortedOrders = this.sortBy (uniqueOrders, 'timestamp');
+            return this.filterBySinceLimit (sortedOrders, since, limit);
         }
         return await this.fetchOrdersClassic (symbol, since, limit, params);
     }
